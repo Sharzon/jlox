@@ -23,8 +23,18 @@ class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        Expr expr = equality();
+
+        while (match(COMMA)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
     }
+
+    // expr -> equality ("," equality)*
 
     private Expr equality() {
         Expr expr = comparison();
